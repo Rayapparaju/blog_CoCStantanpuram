@@ -1,0 +1,88 @@
+{% extends 'church/base.html' %}
+{% load static %}
+{% block title %}Songs - CoC Stantanpuram{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container text-center">
+        <h1 class="display-5 fw-bold">Songs</h1>
+        <p class="lead">Worship through music and lyrics</p>
+    </div>
+</div>
+
+<div class="container section-padding">
+    <div class="row mb-4">
+        <div class="col-md-6 mx-auto">
+            <form class="d-flex" method="GET">
+                <div class="input-group">
+                    <input class="form-control" type="search" name="q" placeholder="Search songs..." value="{{ request.GET.q }}">
+                    <button class="btn btn-primary" type="submit"><i class="bi bi-search"></i> Search</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row">
+        {% for song in songs %}
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h5 class="card-title fw-bold mb-1">{{ song.title }}</h5>
+                            <small class="text-muted">{{ song.created_at|date:"M d, Y" }}</small>
+                        </div>
+                        <span class="badge bg-secondary"><i class="bi bi-music-note"></i> Song</span>
+                    </div>
+                    <hr>
+                    {% if song.lyrics %}
+                    <div class="song-lyrics">
+                        {{ song.lyrics|linebreaks|truncatewords:60 }}
+                    </div>
+                    <button class="btn btn-link btn-sm text-decoration-none p-0 toggle-lyrics" data-target="lyrics-{{ forloop.counter }}">
+                        <i class="bi bi-chevron-down"></i> Show Full Lyrics
+                    </button>
+                    <div id="lyrics-{{ forloop.counter }}" class="song-lyrics-full d-none">
+                        {{ song.lyrics|linebreaks }}
+                    </div>
+                    {% endif %}
+                    {% if song.audio_file %}
+                    <hr>
+                    <audio controls class="w-100" style="height:40px;">
+                        <source src="{{ song.audio_file.url }}" type="audio/mpeg">
+                    </audio>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <i class="bi bi-music-note-beamed" style="font-size:3rem;color:#ccc;"></i>
+            <p class="text-muted mt-3">No songs found.</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if songs.has_other_pages %}
+    <nav class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if songs.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page=1{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">&laquo;</a></li>
+            <li class="page-item"><a class="page-link" href="?page={{ songs.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">&lsaquo;</a></li>
+            {% endif %}
+            {% for i in songs.paginator.page_range %}
+            {% if songs.number == i %}
+            <li class="page-item active"><span class="page-link">{{ i }}</span></li>
+            {% elif i > songs.number|add:'-3' and i < songs.number|add:'3' %}
+            <li class="page-item"><a class="page-link" href="?page={{ i }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">{{ i }}</a></li>
+            {% endif %}
+            {% endfor %}
+            {% if songs.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ songs.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">&rsaquo;</a></li>
+            <li class="page-item"><a class="page-link" href="?page={{ songs.paginator.num_pages }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">&raquo;</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+{% endblock %}

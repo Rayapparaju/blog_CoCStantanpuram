@@ -1,0 +1,59 @@
+{% extends 'church/base.html' %}
+{% load static %}
+{% block title %}Gallery - CoC Stantanpuram{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container text-center">
+        <h1 class="display-5 fw-bold">Gallery</h1>
+        <p class="lead">Moments captured from our church gatherings and events</p>
+    </div>
+</div>
+
+<div class="container section-padding">
+    <div class="row g-4">
+        {% for image in images %}
+        <div class="col-md-4 col-6">
+            <div class="gallery-card">
+                <a href="{{ image.image.url }}" target="_blank" class="gallery-link">
+                    <img src="{{ image.image.url }}" alt="{{ image.title }}" class="img-fluid rounded shadow-sm gallery-img">
+                    <div class="gallery-overlay">
+                        <h6>{{ image.title }}</h6>
+                        {% if image.description %}
+                        <p class="small mb-0">{{ image.description|truncatewords:10 }}</p>
+                        {% endif %}
+                    </div>
+                </a>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <i class="bi bi-images" style="font-size:3rem;color:#ccc;"></i>
+            <p class="text-muted mt-3">No images in the gallery yet.</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if images.has_other_pages %}
+    <nav class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if images.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page=1">&laquo;</a></li>
+            <li class="page-item"><a class="page-link" href="?page={{ images.previous_page_number }}">&lsaquo;</a></li>
+            {% endif %}
+            {% for i in images.paginator.page_range %}
+            {% if images.number == i %}
+            <li class="page-item active"><span class="page-link">{{ i }}</span></li>
+            {% elif i > images.number|add:'-3' and i < images.number|add:'3' %}
+            <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+            {% endif %}
+            {% endfor %}
+            {% if images.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ images.next_page_number }}">&rsaquo;</a></li>
+            <li class="page-item"><a class="page-link" href="?page={{ images.paginator.num_pages }}">&raquo;</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+{% endblock %}

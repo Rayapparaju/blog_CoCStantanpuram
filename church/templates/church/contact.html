@@ -1,0 +1,77 @@
+{% extends 'church/base.html' %}
+{% load static %}
+{% block title %}Contact Us - CoC Stantanpuram{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container text-center">
+        <h1 class="display-5 fw-bold">Contact Us</h1>
+        <p class="lead">We'd love to hear from you. Send us a message.</p>
+    </div>
+</div>
+
+<div class="container section-padding">
+    <div class="row g-5">
+        <div class="col-lg-7">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <h4 class="mb-4"><i class="bi bi-envelope-paper"></i> Send a Message</h4>
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Name *</label>
+                                {{ form.name }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Email *</label>
+                                {{ form.email }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Phone</label>
+                                {{ form.phone }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Subject *</label>
+                                {{ form.subject }}
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Message *</label>
+                            {{ form.message }}
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-send"></i> Send Message
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-5">
+            <div class="card shadow-sm h-100">
+                <div class="card-body p-4">
+                    <h4 class="mb-4">Get in Touch</h4>
+                    <div class="mb-4">
+                        <h6><i class="bi bi-geo-alt text-primary"></i> Our Address</h6>
+                        <p class="text-muted mb-0">CoC Stantanpuram,<br>Stantanpuram, India</p>
+                    </div>
+                    <div class="mb-4">
+                        <h6><i class="bi bi-envelope text-primary"></i> Email</h6>
+                        <p class="text-muted mb-0">info@cocstantanpuram.org</p>
+                    </div>
+                    <div class="mb-4">
+                        <h6><i class="bi bi-telephone text-primary"></i> Phone</h6>
+                        <p class="text-muted mb-0">+91-XXX-XXX-XXXX</p>
+                    </div>
+                    <div class="mb-0">
+                        <h6><i class="bi bi-clock text-primary"></i> Service Times</h6>
+                        <p class="text-muted mb-0">Sunday Worship: 9:00 AM<br>Wednesday Bible Study: 6:00 PM</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

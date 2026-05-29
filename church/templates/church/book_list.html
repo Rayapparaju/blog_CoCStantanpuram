@@ -1,0 +1,67 @@
+{% extends 'church/base.html' %}
+{% load static %}
+{% block title %}Books - CoC Stantanpuram{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container text-center">
+        <h1 class="display-5 fw-bold">Books</h1>
+        <p class="lead">Browse and download Christian books</p>
+    </div>
+</div>
+
+<div class="container section-padding">
+    <div class="row">
+        {% for book in books %}
+        <div class="col-md-4 col-lg-3 mb-4">
+            <div class="card h-100 shadow-sm text-center">
+                {% if book.cover_image %}
+                <img src="{{ book.cover_image.url }}" class="card-img-top" alt="{{ book.title }}" style="height:280px;object-fit:cover;">
+                {% else %}
+                <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" style="height:280px;">
+                    <i class="bi bi-book text-white" style="font-size:4rem;"></i>
+                </div>
+                {% endif %}
+                <div class="card-body d-flex flex-column">
+                    <h6 class="card-title fw-bold">{{ book.title }}</h6>
+                    <p class="card-text small text-muted">{{ book.author }}</p>
+                    <p class="card-text small flex-grow-1">{{ book.description|truncatewords:15 }}</p>
+                    {% if book.pdf_file %}
+                    <a href="{{ book.pdf_file.url }}" target="_blank" class="btn btn-success btn-sm">
+                        <i class="bi bi-download"></i> Download PDF
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <i class="bi bi-book" style="font-size:3rem;color:#ccc;"></i>
+            <p class="text-muted mt-3">No books available yet.</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if books.has_other_pages %}
+    <nav class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if books.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page=1">&laquo;</a></li>
+            <li class="page-item"><a class="page-link" href="?page={{ books.previous_page_number }}">&lsaquo;</a></li>
+            {% endif %}
+            {% for i in books.paginator.page_range %}
+            {% if books.number == i %}
+            <li class="page-item active"><span class="page-link">{{ i }}</span></li>
+            {% elif i > books.number|add:'-3' and i < books.number|add:'3' %}
+            <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+            {% endif %}
+            {% endfor %}
+            {% if books.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ books.next_page_number }}">&rsaquo;</a></li>
+            <li class="page-item"><a class="page-link" href="?page={{ books.paginator.num_pages }}">&raquo;</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+{% endblock %}
